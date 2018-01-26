@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.school.base.messanger.Result;
 import com.user_service.service.UserService;
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/schoolshoping/user")
 public class UserRest {
 	@Autowired
 	@Qualifier("UserService")

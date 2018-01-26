@@ -13,7 +13,7 @@ import com.user_service.service.SchoolService;
 
 
 @RestController
-@RequestMapping("/school")
+@RequestMapping("/schoolshoping/school")
 public class SchoolRest {
 	@Autowired
 	@Qualifier("SchoolService")

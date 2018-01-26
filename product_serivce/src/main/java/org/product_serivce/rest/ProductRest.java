@@ -1,25 +1,53 @@
 package org.product_serivce.rest;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.school.base.entity.Product;
+import com.school.base.messanger.Result;
+
 @RestController
-@RequestMapping("/shangze/car/bihu")
+@RequestMapping("/schoolshoping/product")
 public class ProductRest {
 	@Autowired
 	private LoadBalancerClient loadBalancer;
 	@Autowired
 	private RestTemplate restTemplate;
+	@Autowired
+	private HttpServletRequest request;
 	
-	
-	private <T> T post(String service, String company, String method, Object request, Class<T> a) {
-		String uri = loadBalancer.choose(service).getUri() + "/shangze/car/" + company + "/" + method;
+	private <T> T post(String service, String target, String method, Object request, Class<T> a) {
+		String uri = loadBalancer.choose(service).getUri() + "/schoolshoping/" + target + "/" + method;
 		return restTemplate.postForObject(uri, request, a);
 	}
 
-	
-	
+	@CrossOrigin(origins = "*")
+	@RequestMapping("saveProduct")
+	public Result saveProduct() {
+		try {
+			String ownerid = request.getParameter("userid");
+			String price = request.getParameter("price");
+			String name = request.getParameter("name");
+			Product product = new Product();
+			product.setName(name);
+			product.setOwnerId(ownerid);
+			product.setPrice(price);
+			Document doc=  this.post("", "getParameter","save", product, Document.class);
+			return new Result(0,"success");
+		}catch(Exception e) {
+			return new Result(-1,"success");
+		}
+	}
+	@CrossOrigin(origins = "*")
+	@RequestMapping("save")
+	public Document save() {
+		return null;
+	}
 }
