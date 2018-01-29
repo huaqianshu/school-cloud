@@ -3,6 +3,7 @@ package org.product_serivce.rest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.bson.Document;
+import org.product_serivce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,12 +23,14 @@ public class ProductRest {
 	private RestTemplate restTemplate;
 	@Autowired
 	private HttpServletRequest request;
-	
+	@Autowired
+	private ProductService productService;
 	private <T> T post(String service, String target, String method, Object request, Class<T> a) {
 		String uri = loadBalancer.choose(service).getUri() + "/schoolshoping/" + target + "/" + method;
 		return restTemplate.postForObject(uri, request, a);
 	}
 
+	
 	@CrossOrigin(origins = "*")
 	@RequestMapping("saveProduct")
 	public Result saveProduct() {
@@ -39,7 +42,7 @@ public class ProductRest {
 			product.setName(name);
 			product.setOwnerId(ownerid);
 			product.setPrice(price);
-			Document doc=  this.post("", "getParameter","save", product, Document.class);
+			productService.saveProduct(product);
 			return new Result(0,"success");
 		}catch(Exception e) {
 			return new Result(-1,"success");
