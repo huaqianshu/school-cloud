@@ -7,6 +7,7 @@ import org.product_serivce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -42,15 +43,15 @@ public class ProductRest {
 			product.setName(name);
 			product.setOwnerId(ownerid);
 			product.setPrice(price);
-			productService.saveProduct(product);
-			return new Result(0,"success");
+			Result result = this.post("product-service", "product", "save", product, Result.class);
+			return result;
 		}catch(Exception e) {
-			return new Result(-1,"success");
+			return new Result(-1,"fail");
 		}
 	}
 	@CrossOrigin(origins = "*")
 	@RequestMapping("save")
-	public Document save() {
-		return null;
+	public Result save(@RequestBody Product product) {
+		return productService.saveProduct(product);
 	}
 }
